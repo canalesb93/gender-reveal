@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FFF5F0">
+<link rel="icon" href="data:,">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Gender Reveal - Ricardo & Isabella</title>
+<title>Ricardo & Isabela's Baby Gender Reveal</title>
+<meta property="og:title" content="Ricardo & Isabela's Baby Gender Reveal">
+<meta property="og:description" content="Scratch to find out! 👶">
+<meta property="og:image" content="https://baby-reveal.exe.xyz/og-image.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ricardo & Isabela's Baby Gender Reveal">
+<meta name="twitter:description" content="Scratch to find out! 👶">
+<meta name="twitter:image" content="https://baby-reveal.exe.xyz/og-image.jpg">
 <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 <style>
 *, *::before, *::after {
@@ -14,15 +24,18 @@
   padding: 0;
 }
 
-html, body {
-  position: fixed;
-  overflow: hidden;
-  width: 100%;
-  height: 100dvh;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: none;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+html {
   background: linear-gradient(135deg, #FFF5F0 0%, #FDE8E0 30%, #E8F0FE 70%, #F0F4FF 100%);
+  min-height: 100%;
+  transition: background 0.6s ease;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
@@ -30,13 +43,19 @@ html, body {
 }
 
 .app {
+  position: fixed;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100dvh;
   padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
   gap: 14px;
+  overflow: hidden;
 }
 
 .header {
@@ -62,7 +81,6 @@ html, body {
 .progress-container {
   width: min(85vw, 360px);
   position: relative;
-  height: 32px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -74,7 +92,7 @@ html, body {
   background: #E8E0D8;
   border-radius: 5px;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -110,21 +128,20 @@ html, body {
   font-size: 20px;
   flex-shrink: 0;
   line-height: 1;
+  transition: transform 0.2s ease;
 }
 
-.progress-knob {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 22px;
-  height: 22px;
-  background: white;
-  border: 3px solid #C8B8A8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: left 0.4s ease, border-color 0.4s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  z-index: 2;
+.progress-emoji-left.scared,
+.progress-emoji-right.scared {
+  animation: scaredShake 0.4s ease-in-out infinite;
+}
+
+@keyframes scaredShake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20% { transform: translateX(-2px) rotate(-5deg); }
+  40% { transform: translateX(2px) rotate(5deg); }
+  60% { transform: translateX(-1px) rotate(-3deg); }
+  80% { transform: translateX(1px) rotate(3deg); }
 }
 
 /* Grid */
@@ -141,6 +158,22 @@ html, body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06);
+  animation: cellEntrance 0.4s ease both;
+}
+
+.cell:nth-child(1) { animation-delay: 0.05s; }
+.cell:nth-child(2) { animation-delay: 0.1s; }
+.cell:nth-child(3) { animation-delay: 0.15s; }
+.cell:nth-child(4) { animation-delay: 0.2s; }
+.cell:nth-child(5) { animation-delay: 0.25s; }
+.cell:nth-child(6) { animation-delay: 0.3s; }
+.cell:nth-child(7) { animation-delay: 0.35s; }
+.cell:nth-child(8) { animation-delay: 0.4s; }
+.cell:nth-child(9) { animation-delay: 0.45s; }
+
+@keyframes cellEntrance {
+  from { opacity: 0; transform: scale(0.7) translateY(15px); }
+  to { opacity: 1; transform: none; }
 }
 
 .cell-content {
@@ -150,9 +183,6 @@ html, body {
   align-items: center;
   justify-content: center;
   font-size: clamp(36px, 10vw, 56px);
-  opacity: 0;
-  transform: scale(0.5);
-  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .cell-content.boy-bg {
@@ -163,7 +193,29 @@ html, body {
   background: linear-gradient(135deg, #FFDAE0, #FFB6C1);
 }
 
-.cell.revealed .cell-content {
+/* White overlay that fades as more is scratched — progressive color reveal */
+.cell-content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: var(--cover-opacity, 0.75);
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.cell.revealed .cell-content::after {
+  opacity: 0;
+}
+
+/* Emoji is hidden until revealed — background is always visible through scratches */
+.cell-content .emoji {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cell.revealed .cell-content .emoji {
   opacity: 1;
   transform: scale(1);
   animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -189,6 +241,21 @@ html, body {
   100% { transform: scale(1.1); opacity: 0; }
 }
 
+/* Pulse hint to draw attention back to active card */
+.cell.pulse-hint {
+  box-shadow: 0 0 0 4px rgba(255, 180, 100, 0.8), 0 0 12px rgba(255, 180, 100, 0.4), 0 2px 8px rgba(0,0,0,0.1) !important;
+  transition: box-shadow 0.1s ease !important;
+}
+.cell:not(.pulse-hint) {
+  transition: box-shadow 0.25s ease;
+}
+
+/* Glow hint when close to reveal threshold */
+.cell.almost-there {
+  box-shadow: 0 0 12px 3px rgba(255, 200, 150, 0.5), 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
 .cell canvas {
   position: absolute;
   inset: 0;
@@ -199,29 +266,21 @@ html, body {
   transition: opacity 0.4s ease;
 }
 
-/* Shimmer effect on unscratched cells */
-.cell:not(.revealed)::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255,255,255,0.15) 45%,
-    rgba(255,255,255,0.25) 50%,
-    rgba(255,255,255,0.15) 55%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
+/* Scratch dust particles */
+.scratch-particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
+  animation: particleFly 0.8s ease-out forwards;
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+@keyframes particleFly {
+  0% { opacity: 0.9; transform: translate(0, 0) scale(1); }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
 }
 
 .cell.revealed canvas {
@@ -241,6 +300,7 @@ html, body {
   text-align: center;
   font-weight: 500;
   letter-spacing: 0.5px;
+  min-height: 1.4em;
 }
 
 /* Celebration Overlay */
@@ -270,17 +330,16 @@ html, body {
   color: white;
   text-shadow: 0 3px 12px rgba(180, 60, 90, 0.4);
   font-weight: 800;
-  animation: celebrationBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   opacity: 0;
 }
 
 .celebration .parents {
-  font-size: clamp(20px, 5vw, 30px);
-  color: white;
-  margin-top: 8px;
-  font-weight: 600;
-  text-shadow: 0 2px 6px rgba(180, 60, 90, 0.3);
-  animation: fadeSlideUp 0.6s ease 0.3s forwards;
+  position: absolute;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  font-size: clamp(13px, 3.5vw, 16px);
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  letter-spacing: 0.3px;
   opacity: 0;
 }
 
@@ -289,12 +348,18 @@ html, body {
   color: rgba(255, 255, 255, 0.9);
   margin-top: 6px;
   font-weight: 500;
-  animation: fadeSlideUp 0.6s ease 0.5s forwards;
+  opacity: 0;
+}
+
+.celebration .scan-photo {
+  width: min(55vw, 220px);
+  margin-top: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   opacity: 0;
 }
 
 .celebration .restart-btn {
-  margin-top: 28px;
   padding: 14px 36px;
   font-size: 17px;
   font-weight: 600;
@@ -304,12 +369,49 @@ html, body {
   border-radius: 50px;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  animation: fadeSlideUp 0.6s ease 0.7s forwards;
-  opacity: 0;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
+.celebration .btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  opacity: 0;
+}
+
+/* Animations only play when celebration is active */
+.celebration.active h2 {
+  animation: celebrationBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.celebration.active .due-date {
+  animation: fadeSlideUp 0.6s ease 0.4s forwards;
+}
+.celebration.active .scan-photo {
+  animation: fadeSlideUp 0.6s ease 0.5s forwards;
+}
+.celebration.active .btn-row {
+  animation: fadeSlideUp 0.6s ease 0.6s forwards;
+}
+.celebration.active .parents {
+  animation: fadeSlideUp 0.6s ease 0.7s forwards;
+}
+
+.celebration .share-btn {
+  padding: 14px 36px;
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+  background: #C0506A;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.celebration .share-btn:active,
 .celebration .restart-btn:active {
   transform: scale(0.95);
 }
@@ -323,6 +425,42 @@ html, body {
 @keyframes fadeSlideUp {
   0% { transform: translateY(15px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Landscape overlay */
+.landscape-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: linear-gradient(135deg, #FFF5F0, #FFF0F5);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.landscape-icon {
+  font-size: 64px;
+  animation: rotateHint 1.5s ease-in-out infinite;
+}
+
+.landscape-text {
+  font-size: 16px;
+  color: #8B7355;
+  font-weight: 500;
+  text-align: center;
+}
+
+@keyframes rotateHint {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(90deg); }
+  75% { transform: rotate(90deg); }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .landscape-overlay { display: flex; }
 }
 
 /* DOM-based confetti fallback */
@@ -345,7 +483,7 @@ html, body {
 
 <div class="app">
   <div class="header">
-    <h1>Ricardo & Isabella's</h1>
+    <h1>Ricardo & Isabela's</h1>
     <div class="subtitle">Baby Gender Reveal</div>
   </div>
 
@@ -354,7 +492,6 @@ html, body {
     <div class="progress-track">
       <div class="progress-fill-boy" id="fillBoy"></div>
       <div class="progress-fill-girl" id="fillGirl"></div>
-      <div class="progress-knob" id="knob"></div>
     </div>
     <span class="progress-emoji-right">&#x1F467;</span>
   </div>
@@ -364,21 +501,37 @@ html, body {
   <div class="instructions" id="instructions">Scratch to reveal!</div>
 </div>
 
+<div class="landscape-overlay">
+  <div class="landscape-icon">📱</div>
+  <div class="landscape-text">Please rotate your device to portrait</div>
+</div>
+
 <div class="celebration" id="celebration">
   <h2>It's a Girl!</h2>
-  <div class="parents">Ricardo & Isabella</div>
   <div class="due-date">Coming July 2026</div>
-  <button class="restart-btn" id="restartBtn">Play Again</button>
+  <img class="scan-photo" src="baby_scan.png" alt="Baby scan">
+  <div class="btn-row">
+    <button class="restart-btn" id="restartBtn">Play Again</button>
+    <button class="share-btn" id="shareBtn">Share</button>
+  </div>
+  <div class="parents">Ricardo & Isabela</div>
 </div>
 
 <script>
 (function() {
   'use strict';
 
+  // Rigged mode: ?rigged in URL triggers a dramatic predetermined reveal order
+  var isRigged = new URLSearchParams(window.location.search).has('rigged');
+  // Drama arc: girl lead -> boys overtake -> girls comeback win
+  var riggedSequence = ['girl', 'girl', 'boy', 'boy', 'boy', 'boy', 'girl', 'girl', 'girl'];
+  var riggedIndex = 0;
+
   // State
   let grid = [];
   let boyRevealed = 0;
   let girlRevealed = 0;
+  let activeCell = -1; // index of cell currently being scratched, -1 = none
   let phase = 'playing'; // playing | won
   let confettiInterval = null;
   let jsConfetti = null;
@@ -403,6 +556,8 @@ html, body {
   function initGame() {
     boyRevealed = 0;
     girlRevealed = 0;
+    riggedIndex = 0;
+    activeCell = -1;
     phase = 'playing';
 
     if (confettiInterval) {
@@ -413,8 +568,9 @@ html, body {
     // Remove any DOM confetti
     document.querySelectorAll('.confetti-piece').forEach(function(el) { el.remove(); });
 
-    // Hide celebration
+    // Hide celebration and reset background
     document.getElementById('celebration').classList.remove('active');
+    document.documentElement.style.background = '';
 
     // Create gender array: 5 girls, 4 boys
     const genders = shuffle(['girl','girl','girl','girl','girl','boy','boy','boy','boy']);
@@ -431,7 +587,10 @@ html, body {
 
       const content = document.createElement('div');
       content.className = 'cell-content ' + (item.gender === 'boy' ? 'boy-bg' : 'girl-bg');
-      content.textContent = item.gender === 'boy' ? '\u{1F466}' : '\u{1F467}';
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'emoji';
+      emojiSpan.textContent = item.gender === 'boy' ? '\u{1F466}' : '\u{1F467}';
+      content.appendChild(emojiSpan);
 
       const canvas = document.createElement('canvas');
       canvas.style.touchAction = 'none';
@@ -453,10 +612,12 @@ html, body {
 
   // Set up a scratch canvas
   function setupCanvas(canvas, index) {
-    const rect = canvas.getBoundingClientRect();
+    // Use clientWidth/clientHeight (layout dimensions, unaffected by CSS transforms)
+    // getBoundingClientRect() returns transformed dimensions which are wrong during entrance animation
+    const cell = canvas.parentElement;
     const dpr = window.devicePixelRatio || 1;
-    const w = rect.width;
-    const h = rect.height;
+    const w = cell.clientWidth;
+    const h = cell.clientHeight;
 
     canvas.width = w * dpr;
     canvas.height = h * dpr;
@@ -500,11 +661,12 @@ html, body {
     let lastX = null;
     let lastY = null;
     let moveCount = 0;
-    const RADIUS = 22;
+    let cachedRect = null;
+    const RADIUS = 19;
 
     function getPos(e) {
       const touch = e.touches ? e.touches[0] : e;
-      const r = canvas.getBoundingClientRect();
+      const r = cachedRect || canvas.getBoundingClientRect();
       return { x: touch.clientX - r.left, y: touch.clientY - r.top };
     }
 
@@ -538,7 +700,20 @@ html, body {
         total++;
         if (data[i] < 128) transparent++;
       }
-      if (transparent / total > 0.65) {
+      var pct = transparent / total;
+      var cell = document.getElementById('cell-' + index);
+      var content = cell.querySelector('.cell-content');
+
+      // Progressive color reveal: fade white overlay from 0.75 -> 0 as pct goes 0 -> 0.65
+      var coverOpacity = Math.max(0, 0.75 * (1 - pct / 0.65));
+      content.style.setProperty('--cover-opacity', coverOpacity);
+
+      // Glow hint when approaching threshold
+      if (pct > 0.45 && pct <= 0.65) {
+        cell.classList.add('almost-there');
+      }
+      if (pct > 0.65) {
+        cell.classList.remove('almost-there');
         revealCell(index);
       }
     }
@@ -546,6 +721,39 @@ html, body {
     function onStart(e) {
       if (phase !== 'playing' || grid[index].revealed) return;
       e.preventDefault();
+
+      // Lock: only one card at a time
+      if (activeCell !== -1 && activeCell !== index) {
+        // Pulse the active card to draw attention — force re-trigger every time
+        var activeCellEl = document.getElementById('cell-' + activeCell);
+        if (activeCellEl) {
+          // Clear any pending removal so we can re-trigger cleanly
+          if (activeCellEl._pulseTimer) clearTimeout(activeCellEl._pulseTimer);
+          activeCellEl.classList.remove('pulse-hint');
+          // Force reflow so the browser registers the removal before re-adding
+          void activeCellEl.offsetWidth;
+          activeCellEl.classList.add('pulse-hint');
+          activeCellEl._pulseTimer = setTimeout(function() {
+            activeCellEl.classList.remove('pulse-hint');
+            activeCellEl._pulseTimer = null;
+          }, 400);
+        }
+        return;
+      }
+      activeCell = index;
+
+      // Rigged mode: on first touch of this cell, assign the next rigged gender
+      if (isRigged && !grid[index].riggedAssigned) {
+        grid[index].riggedAssigned = true;
+        var nextGender = riggedSequence[riggedIndex++] || 'girl';
+        grid[index].gender = nextGender;
+        var cell = document.getElementById('cell-' + index);
+        var content = cell.querySelector('.cell-content');
+        content.className = 'cell-content ' + (nextGender === 'boy' ? 'boy-bg' : 'girl-bg');
+        content.querySelector('.emoji').textContent = nextGender === 'boy' ? '\u{1F466}' : '\u{1F467}';
+      }
+
+      cachedRect = canvas.getBoundingClientRect();
       isScratching = true;
       moveCount = 0;
       const pos = getPos(e);
@@ -559,6 +767,10 @@ html, body {
       e.preventDefault();
       const pos = getPos(e);
       scratchLine(lastX, lastY, pos.x, pos.y);
+      // Spawn dust particles occasionally
+      if (moveCount % 3 === 0) {
+        spawnParticle(e, canvas);
+      }
       lastX = pos.x;
       lastY = pos.y;
       moveCount++;
@@ -571,6 +783,7 @@ html, body {
       if (!isScratching) return;
       e.preventDefault();
       isScratching = false;
+      cachedRect = null;
       checkReveal();
       lastX = null;
       lastY = null;
@@ -593,12 +806,14 @@ html, body {
   function revealCell(index) {
     if (grid[index].revealed) return;
     grid[index].revealed = true;
+    activeCell = -1; // unlock so user can scratch next card
 
     const cell = document.getElementById('cell-' + index);
     cell.classList.add('revealed');
+    cell.classList.remove('pulse-hint');
     cell.classList.add(grid[index].gender === 'boy' ? 'boy-cell' : 'girl-cell');
 
-    // Haptic feedback
+    // Haptic feedback on reveal
     if (navigator.vibrate) {
       navigator.vibrate(50);
     }
@@ -615,11 +830,12 @@ html, body {
     if (girlRevealed >= 5 && phase === 'playing') {
       phase = 'won';
       document.getElementById('instructions').textContent = '';
+      progressBarWin();
       setTimeout(showCelebration, 600);
     }
   }
 
-  // Update progress bar
+  // Update progress bar and background
   function updateProgress() {
     const total = 9;
     const boyPct = (boyRevealed / total) * 100;
@@ -628,20 +844,34 @@ html, body {
     document.getElementById('fillBoy').style.width = boyPct + '%';
     document.getElementById('fillGirl').style.width = girlPct + '%';
 
-    // Knob position: 50% + (girl - boy) * 5.5%, clamped 5-95
-    let knobPos = 50 + (girlRevealed - boyRevealed) * 5.5;
-    knobPos = Math.max(5, Math.min(95, knobPos));
-    document.getElementById('knob').style.left = knobPos + '%';
+    updateScaredEmojis();
 
-    // Color the knob border based on who's leading
-    const knob = document.getElementById('knob');
-    if (girlRevealed > boyRevealed) {
-      knob.style.borderColor = '#E891A0';
-    } else if (boyRevealed > girlRevealed) {
-      knob.style.borderColor = '#5BA3D9';
+    // Shift background gradient subtly towards the leading gender
+    const diff = girlRevealed - boyRevealed; // positive = girl leading
+    const revealed = girlRevealed + boyRevealed;
+    if (revealed === 0) {
+      document.documentElement.style.background = '';
     } else {
-      knob.style.borderColor = '#C8B8A8';
+      // Blend factor: subtle, max ~0.15 opacity shift during play
+      const t = Math.min(Math.abs(diff) / 5, 1) * 0.15;
+      if (diff > 0) {
+        // Girl leading — warm pink tint
+        document.documentElement.style.background = 'linear-gradient(135deg, rgba(255,218,224,' + t + '), rgba(255,182,193,' + (t * 0.7) + '), rgba(253,232,224,' + (1 - t * 0.3) + '), rgba(255,240,245,' + (1 - t * 0.2) + '))';
+      } else if (diff < 0) {
+        // Boy leading — cool blue tint
+        document.documentElement.style.background = 'linear-gradient(135deg, rgba(184,224,247,' + t + '), rgba(135,206,235,' + (t * 0.7) + '), rgba(232,240,254,' + (1 - t * 0.3) + '), rgba(240,244,255,' + (1 - t * 0.2) + '))';
+      }
     }
+  }
+
+  // Slam progress bar fully to girl side on win
+  function progressBarWin() {
+    document.getElementById('fillGirl').style.width = '100%';
+    document.getElementById('fillBoy').style.width = '0%';
+    document.querySelector('.progress-emoji-left').classList.remove('scared');
+    document.querySelector('.progress-emoji-right').classList.remove('scared');
+    // Full pink background
+    document.documentElement.style.background = 'linear-gradient(135deg, #FFF0F3 0%, #FFE0E6 30%, #FFDAE0 60%, #FFF0F5 100%)';
   }
 
   // Celebration
@@ -685,8 +915,72 @@ html, body {
     }
   }
 
+  // Scratch dust particles
+  function spawnParticle(e, canvas) {
+    var touch = e.touches ? e.touches[0] : e;
+    var colors = ['#C8B8A8', '#D4C8B8', '#B8AEA0', '#E0D6C8', '#DDD4C8'];
+    for (var p = 0; p < 4; p++) {
+      var el = document.createElement('div');
+      el.className = 'scratch-particle';
+      var dx = (Math.random() - 0.5) * 70;
+      var dy = (Math.random() - 0.5) * 70 - 15;
+      el.style.setProperty('--dx', dx + 'px');
+      el.style.setProperty('--dy', dy + 'px');
+      el.style.left = touch.clientX + 'px';
+      el.style.top = touch.clientY + 'px';
+      var size = 4 + Math.random() * 5;
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(el);
+      (function(elem) {
+        setTimeout(function() { elem.remove(); }, 900);
+      })(el);
+    }
+  }
+
+  // Scared emoji — the losing side shakes
+  function updateScaredEmojis() {
+    var boyEmoji = document.querySelector('.progress-emoji-left');
+    var girlEmoji = document.querySelector('.progress-emoji-right');
+    boyEmoji.classList.remove('scared');
+    girlEmoji.classList.remove('scared');
+    if (girlRevealed > boyRevealed) {
+      boyEmoji.classList.add('scared');
+    } else if (boyRevealed > girlRevealed) {
+      girlEmoji.classList.add('scared');
+    }
+  }
+
+  // Share button — never reveal the gender in share metadata
+  var shareUrl = window.location.origin + window.location.pathname;
+  document.getElementById('shareBtn').addEventListener('click', function() {
+    // Use native share on mobile, copy link on desktop
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile && navigator.share) {
+      navigator.share({
+        title: "Ricardo & Isabela's Baby Gender Reveal",
+        text: "Scratch to find out! \u{1F476}",
+        url: shareUrl
+      });
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(function() {
+        var btn = document.getElementById('shareBtn');
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Share'; }, 2000);
+      });
+    }
+  });
+
   // Restart
   document.getElementById('restartBtn').addEventListener('click', function() {
+    // Remove rigged param on restart so replays are normal
+    if (isRigged) {
+      isRigged = false;
+      var url = new URL(window.location);
+      url.searchParams.delete('rigged');
+      window.history.replaceState({}, '', url);
+    }
     initGame();
   });
 
