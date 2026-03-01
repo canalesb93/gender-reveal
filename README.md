@@ -43,22 +43,16 @@ All customization is done in [`config.js`](config.js). Here are the key options:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `gender` | `'boy'` or `'girl'` | `'girl'` | The baby's gender (winning side) |
+| `gender` | `'boy'` or `'girl'` | `'girl'` | The baby's gender — all colors, emojis, and text auto-derive from this |
 | `title` | string | `'Baby Gender Reveal'` | Main heading above the grid |
 | `subtitle` | string | `'Scratch to find out!'` | Subheading / instructions |
-| `celebrationText` | string | `"It's a Girl!"` | Large text on the celebration screen |
 | `dueDate` | string or `null` | `null` | Due date shown on celebration (e.g. `'Coming July 2026'`) |
 | `parentNames` | string or `null` | `null` | Names shown at the bottom of the celebration screen |
-| `boyEmoji` / `girlEmoji` | string | `👦` / `👧` | Emojis on the scratch cards |
-| `boyColors` / `girlColors` | object | pink/blue | Cell backgrounds, progress fills, ring pulse, and confetti colors |
-| `celebrationBg` | string | `'rgba(255,182,193,0.88)'` | Celebration overlay background |
-| `confettiColors` | array | pinks/golds | Colors for the explosive confetti bursts |
-| `rainEmojis` | array | baby-themed | Emojis that rain down on the celebration screen |
 | `celebrationImage` | string or `null` | `null` | Path to an image on the celebration screen (e.g. ultrasound) |
 | `ogImage` | string or `null` | `null` | Full URL to a preview image for social media sharing |
-| `shareTitle` / `shareText` | string | title / subtitle | Text used when sharing via native share or clipboard |
 | `riggedSequence` | array | drama arc | Predetermined reveal order when `?rigged` is in the URL |
-| `gridSize` | number | `9` | Total cells (must be odd). Grid columns adjust automatically. |
+
+Colors (pink/blue), emojis (👧/👦), celebration text ("It's a Girl!"/"It's a Boy!"), confetti, and emoji rain are all automatically derived from the `gender` setting.
 
 ### Example: Configuring for a Boy Reveal
 
@@ -67,7 +61,6 @@ var REVEAL_CONFIG = {
   gender: 'boy',
   title: "Alex & Jordan's",
   subtitle: 'Baby Gender Reveal',
-  celebrationText: "It's a Boy!",
   dueDate: 'Coming March 2026',
   parentNames: 'Alex & Jordan',
   celebrationImage: 'ultrasound.png',

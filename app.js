@@ -8,51 +8,44 @@
 (function () {
   'use strict';
 
-  // ── Resolve configuration with defaults ──────────────────────────
+  // ── Resolve configuration ──────────────────────────────────────
 
   var C = (typeof REVEAL_CONFIG !== 'undefined') ? REVEAL_CONFIG : {};
 
-  var gender         = C.gender || 'girl';
-  var otherGender    = gender === 'girl' ? 'boy' : 'girl';
-  var gridSize       = C.gridSize || 9;
-  var winCount       = Math.ceil(gridSize / 2);              // majority needed
-  var loseCount      = gridSize - winCount;
-  var gridCols       = Math.round(Math.sqrt(gridSize));
+  var gender  = C.gender || 'girl';
+  var isGirl  = gender === 'girl';
+  var gridSize = 9;
+  var winCount = 5;
+  var loseCount = 4;
 
-  var winEmoji       = gender === 'girl' ? (C.girlEmoji || '\u{1F467}') : (C.boyEmoji || '\u{1F466}');
-  var loseEmoji      = gender === 'girl' ? (C.boyEmoji || '\u{1F466}') : (C.girlEmoji || '\u{1F467}');
+  // Emojis
+  var winEmoji  = isGirl ? '\u{1F467}' : '\u{1F466}';  // 👧 or 👦
+  var loseEmoji = isGirl ? '\u{1F466}' : '\u{1F467}';
 
-  var winColors      = gender === 'girl' ? (C.girlColors || {}) : (C.boyColors || {});
-  var loseColors     = gender === 'girl' ? (C.boyColors || {}) : (C.girlColors || {});
+  // Color palettes derived from gender
+  var PINK = {
+    cellBg: ['#FFDAE0', '#FFB6C1'], fill: ['#FFB6C1', '#E891A0'],
+    ring: '#E891A0', confetti: ['#FFB6C1', '#FF69B4', '#FF1493', '#FFC0CB', '#FF6B9D'],
+  };
+  var BLUE = {
+    cellBg: ['#B8E0F7', '#87CEEB'], fill: ['#87CEEB', '#5BA3D9'],
+    ring: '#5BA3D9', confetti: ['#87CEEB', '#5BA3D9', '#4FC3F7', '#81D4FA', '#29B6F6'],
+  };
+  var winPalette  = isGirl ? PINK : BLUE;
+  var losePalette = isGirl ? BLUE : PINK;
 
-  var defaultWinCellBg  = gender === 'girl' ? ['#FFDAE0', '#FFB6C1'] : ['#B8E0F7', '#87CEEB'];
-  var defaultLoseCellBg = gender === 'girl' ? ['#B8E0F7', '#87CEEB'] : ['#FFDAE0', '#FFB6C1'];
-  var defaultWinFill    = gender === 'girl' ? ['#FFB6C1', '#E891A0'] : ['#87CEEB', '#5BA3D9'];
-  var defaultLoseFill   = gender === 'girl' ? ['#87CEEB', '#5BA3D9'] : ['#FFB6C1', '#E891A0'];
-  var defaultWinRing    = gender === 'girl' ? '#E891A0' : '#5BA3D9';
-  var defaultLoseRing   = gender === 'girl' ? '#5BA3D9' : '#E891A0';
-  var defaultWinConfetti  = gender === 'girl'
-    ? ['#FFB6C1', '#FF69B4', '#FF1493', '#FFC0CB', '#FF6B9D']
-    : ['#87CEEB', '#5BA3D9', '#4FC3F7', '#81D4FA', '#29B6F6'];
-  var defaultLoseConfetti = gender === 'girl'
-    ? ['#87CEEB', '#5BA3D9', '#4FC3F7', '#81D4FA', '#29B6F6']
-    : ['#FFB6C1', '#FF69B4', '#FF1493', '#FFC0CB', '#FF6B9D'];
+  var confettiColors = winPalette.confetti;
+  var celebrationBg  = isGirl ? 'rgba(255, 182, 193, 0.88)' : 'rgba(135, 206, 235, 0.88)';
 
-  var confettiColors = C.confettiColors || defaultWinConfetti;
-
-  var rainEmojis = C.rainEmojis || [
-    '\u{1F467}', '\u{1F476}', '\u{1F380}', '\u{1F495}',
-    '\u{1F338}', '\u{1F496}', '\u{2728}', '\u{1F31F}',
-    '\u{1F37C}', '\u{1F49E}', '\u{1F389}', '\u{1F339}',
-    '\u{2764}\u{FE0F}', '\u{1F490}',
-  ];
-
-  var celebrationBg = C.celebrationBg || 'rgba(255, 182, 193, 0.88)';
+  var rainEmojis = isGirl
+    ? ['\u{1F467}', '\u{1F476}', '\u{1F380}', '\u{1F495}', '\u{1F338}', '\u{1F496}', '\u{2728}', '\u{1F31F}', '\u{1F37C}', '\u{1F49E}', '\u{1F389}', '\u{1F339}', '\u{2764}\u{FE0F}', '\u{1F490}']
+    : ['\u{1F466}', '\u{1F476}', '\u{2B50}', '\u{1F680}', '\u{1F3C6}', '\u{26BD}', '\u{2728}', '\u{1F31F}', '\u{1F37C}', '\u{1F389}', '\u{1F499}', '\u{1F30D}', '\u{2764}\u{FE0F}', '\u{1F451}'];
 
   var riggedSequence = C.riggedSequence || [];
-  var celebrationText = C.celebrationText || ("It's a " + gender.charAt(0).toUpperCase() + gender.slice(1) + '!');
-  var shareTitle = C.shareTitle || C.title || 'Baby Gender Reveal';
-  var shareText  = C.shareText || 'Scratch to find out! \u{1F476}';
+  var celebrationText = "It's a " + (isGirl ? 'Girl' : 'Boy') + '!';
+  var title     = C.title || 'Baby Gender Reveal';
+  var subtitle  = C.subtitle || 'Scratch to find out!';
+  var shareText = subtitle + ' \u{1F476}';
 
   // ── Rigged mode ──────────────────────────────────────────────────
 
@@ -62,67 +55,43 @@
   // ── Apply config to DOM ──────────────────────────────────────────
 
   function applyConfigToDOM() {
-    // Title & subtitle
-    var h1 = document.querySelector('.header h1');
-    var sub = document.querySelector('.header .subtitle');
-    if (h1) h1.textContent = C.title || 'Baby Gender Reveal';
-    if (sub) sub.textContent = C.subtitle || 'Scratch to find out!';
+    document.querySelector('.header h1').textContent = title;
+    document.querySelector('.header .subtitle').textContent = subtitle;
+    document.title = title;
 
-    // Page title
-    document.title = C.title || 'Baby Gender Reveal';
-
-    // Progress bar emojis: winning gender on right, losing on left
+    // Progress bar
     document.querySelector('.progress-emoji-left').textContent = loseEmoji;
     document.querySelector('.progress-emoji-right').textContent = winEmoji;
-
-    // Progress bar fill gradients
-    var fillBoy = document.getElementById('fillBoy');
-    var fillGirl = document.getElementById('fillGirl');
-    var loseFill = loseColors.progressFill || defaultLoseFill;
-    var winFillC = winColors.progressFill || defaultWinFill;
-    fillBoy.style.background = 'linear-gradient(90deg, ' + loseFill[0] + ', ' + loseFill[1] + ')';
-    fillGirl.style.background = 'linear-gradient(270deg, ' + winFillC[0] + ', ' + winFillC[1] + ')';
-
-    // Grid columns
-    document.getElementById('grid').style.gridTemplateColumns = 'repeat(' + gridCols + ', 1fr)';
+    document.getElementById('fillBoy').style.background =
+      'linear-gradient(90deg, ' + losePalette.fill[0] + ', ' + losePalette.fill[1] + ')';
+    document.getElementById('fillGirl').style.background =
+      'linear-gradient(270deg, ' + winPalette.fill[0] + ', ' + winPalette.fill[1] + ')';
 
     // Celebration screen
     var celeb = document.getElementById('celebration');
     celeb.querySelector('h2').textContent = celebrationText;
     celeb.style.background = celebrationBg;
 
-    // Due date
     var dueDateEl = celeb.querySelector('.due-date');
-    if (C.dueDate) {
-      dueDateEl.textContent = C.dueDate;
-      dueDateEl.style.display = '';
-    } else {
-      dueDateEl.style.display = 'none';
-    }
+    dueDateEl.textContent = C.dueDate || '';
+    dueDateEl.style.display = C.dueDate ? '' : 'none';
 
-    // Parent names
     var parentsEl = celeb.querySelector('.parents');
-    if (C.parentNames) {
-      parentsEl.textContent = C.parentNames;
-      parentsEl.style.display = '';
-    } else {
-      parentsEl.style.display = 'none';
-    }
+    parentsEl.textContent = C.parentNames || '';
+    parentsEl.style.display = C.parentNames ? '' : 'none';
 
-    // Scan photo
     var scanEl = celeb.querySelector('.scan-photo');
     if (C.celebrationImage) {
       scanEl.src = C.celebrationImage;
-      scanEl.alt = C.celebrationImageAlt || 'Baby photo';
       scanEl.style.display = '';
     } else {
       scanEl.style.display = 'none';
     }
 
     // OG meta tags
-    setMeta('og:title', shareTitle);
+    setMeta('og:title', title);
     setMeta('og:description', shareText);
-    setMeta('twitter:title', shareTitle);
+    setMeta('twitter:title', title);
     setMeta('twitter:description', shareText);
     if (C.ogImage) {
       setMeta('og:image', C.ogImage);
@@ -201,9 +170,9 @@
 
       var content = document.createElement('div');
       var isWin = item.side === 'win';
-      var bgColors = isWin ? (winColors.cellBg || defaultWinCellBg) : (loseColors.cellBg || defaultLoseCellBg);
+      var pal = isWin ? winPalette : losePalette;
       content.className = 'cell-content';
-      content.style.background = 'linear-gradient(135deg, ' + bgColors[0] + ', ' + bgColors[1] + ')';
+      content.style.background = 'linear-gradient(135deg, ' + pal.cellBg[0] + ', ' + pal.cellBg[1] + ')';
 
       var emojiSpan = document.createElement('span');
       emojiSpan.className = 'emoji';
@@ -221,7 +190,7 @@
     });
 
     updateProgress();
-    document.getElementById('instructions').textContent = C.subtitle || 'Scratch to reveal!';
+    document.getElementById('instructions').textContent = subtitle;
   }
 
   // ── Canvas setup & scratch mechanic ──────────────────────────────
@@ -417,16 +386,13 @@
     var isWin = grid[index].side === 'win';
 
     // Update visuals for (possibly rigged) assignment
-    var bgColors = isWin ? (winColors.cellBg || defaultWinCellBg) : (loseColors.cellBg || defaultLoseCellBg);
-    content.style.background = 'linear-gradient(135deg, ' + bgColors[0] + ', ' + bgColors[1] + ')';
+    var pal = isWin ? winPalette : losePalette;
+    content.style.background = 'linear-gradient(135deg, ' + pal.cellBg[0] + ', ' + pal.cellBg[1] + ')';
     content.querySelector('.emoji').textContent = isWin ? winEmoji : loseEmoji;
 
     cell.classList.add('revealed');
     cell.classList.remove('pulse-hint');
-
-    // Ring pulse color
-    var ringColor = isWin ? (winColors.ringPulse || defaultWinRing) : (loseColors.ringPulse || defaultLoseRing);
-    cell.style.color = ringColor;
+    cell.style.color = pal.ring;
 
     if (navigator.vibrate) navigator.vibrate(50);
 
@@ -586,9 +552,7 @@
     var rect = emojiEl.getBoundingClientRect();
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
-    var colors = isWinSide
-      ? (winColors.confetti || defaultWinConfetti)
-      : (loseColors.confetti || defaultLoseConfetti);
+    var colors = (isWinSide ? winPalette : losePalette).confetti;
 
     for (var i = 0; i < 3; i++) {
       var el = document.createElement('div');
@@ -613,7 +577,7 @@
   document.getElementById('shareBtn').addEventListener('click', function () {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (isMobile && navigator.share) {
-      navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+      navigator.share({ title: title, text: shareText, url: shareUrl });
     } else {
       var btn = document.getElementById('shareBtn');
       navigator.clipboard.writeText(shareUrl).then(function () {
