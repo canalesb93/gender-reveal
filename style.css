@@ -58,6 +58,27 @@ body::before {
   overflow: hidden;
 }
 
+.credit {
+  position: absolute;
+  bottom: calc(6px + env(safe-area-inset-bottom));
+  right: calc(10px + env(safe-area-inset-right));
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: rgba(139, 115, 85, 0.35);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.credit:hover {
+  color: rgba(139, 115, 85, 0.6);
+}
+
+.credit svg {
+  flex-shrink: 0;
+}
+
 /* ── Header ────────────────────────────────────────────────────────── */
 
 .header {
