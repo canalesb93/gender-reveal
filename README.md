@@ -2,6 +2,8 @@
 
 A mobile-friendly, interactive scratch-off game for baby gender reveal parties. Guests scratch 3×3 cards to discover the baby's gender, with a progress bar, animated effects, and a confetti celebration.
 
+**Live demo:** [isa-lil-bump.exe.xyz](https://isa-lil-bump.exe.xyz)
+
 ## Features
 
 - **Scratch-off mechanic** — Canvas-based with smooth touch support and retina rendering
