@@ -349,8 +349,17 @@
       e.preventDefault();
       isScratching = false;
       cachedRect = null;
-      activeCell = -1;
       checkReveal();
+      lastX = null; lastY = null;
+    }
+
+    // On cancel (iOS interruptions like phone calls, notifications),
+    // release the lock so the user isn't stuck on a card they can't reach.
+    function onCancel(e) {
+      if (!isScratching) return;
+      isScratching = false;
+      cachedRect = null;
+      activeCell = -1;
       lastX = null; lastY = null;
     }
 
@@ -359,7 +368,7 @@
       canvas.addEventListener('touchstart', onStart, { passive: false });
       canvas.addEventListener('touchmove', onMove, { passive: false });
       canvas.addEventListener('touchend', onEnd, { passive: false });
-      canvas.addEventListener('touchcancel', onEnd, { passive: false });
+      canvas.addEventListener('touchcancel', onCancel, { passive: false });
     } else {
       canvas.addEventListener('mousedown', onStart);
       canvas.addEventListener('mousemove', onMove);
