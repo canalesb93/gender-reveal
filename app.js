@@ -190,7 +190,7 @@
     });
 
     updateProgress();
-    document.getElementById('instructions').textContent = subtitle;
+    document.getElementById('instructions').textContent = 'Scratch to reveal!';
   }
 
   // ── Canvas setup & scratch mechanic ──────────────────────────────
