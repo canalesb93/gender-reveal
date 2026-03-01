@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Personal assets (not part of the template)
+*.mp3
+baby_scan.png
+og-image.jpg
